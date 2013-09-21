@@ -1,0 +1,78 @@
+<?php
+/** 
+* @(#) $Id: currencies.class.php.php $
+* 
+* Class to handle currencies.
+*
+* @package currencies 
+*
+* @copyright (ported version)2013 ecomextra
+* @copyright (Most) Portions Copyright 2008 osCommerce
+* @license   Released under the GNU General Public License. 
+*/
+if(!defined('IN_ECX')){
+die ("Illegal access attempt");
+}
+  class currencies {
+    var $currencies;
+
+// class constructor
+    function currencies() {
+      $this->currencies = array();
+      $currencies_query = ecx_db_query("select code, title, symbol_left, symbol_right, decimal_point, thousands_point, decimal_places, value from " . TABLE_CURRENCIES);
+      while ($currencies = ecx_db_fetch_array($currencies_query)) {
+        $this->currencies[$currencies['code']] = array('title' => $currencies['title'],
+                                                       'symbol_left' => $currencies['symbol_left'],
+                                                       'symbol_right' => $currencies['symbol_right'],
+                                                       'decimal_point' => $currencies['decimal_point'],
+                                                       'thousands_point' => $currencies['thousands_point'],
+                                                       'decimal_places' => $currencies['decimal_places'],
+                                                       'value' => $currencies['value']);
+      }
+    }
+
+// class methods
+    function format($number, $calculate_currency_value = true, $currency_type = '', $currency_value = '') {
+      global $currency;
+
+      if (empty($currency_type)) $currency_type = $currency;
+
+      if ($calculate_currency_value == true) {
+        $rate = (ecx_not_null($currency_value)) ? $currency_value : $this->currencies[$currency_type]['value'];
+        $format_string = $this->currencies[$currency_type]['symbol_left'] . number_format(ecx_round($number * $rate, $this->currencies[$currency_type]['decimal_places']), $this->currencies[$currency_type]['decimal_places'], $this->currencies[$currency_type]['decimal_point'], $this->currencies[$currency_type]['thousands_point']) . $this->currencies[$currency_type]['symbol_right'];
+      } else {
+        $format_string = $this->currencies[$currency_type]['symbol_left'] . number_format(ecx_round($number, $this->currencies[$currency_type]['decimal_places']), $this->currencies[$currency_type]['decimal_places'], $this->currencies[$currency_type]['decimal_point'], $this->currencies[$currency_type]['thousands_point']) . $this->currencies[$currency_type]['symbol_right'];
+      }
+
+      return $format_string;
+    }
+
+    function calculate_price($products_price, $products_tax, $quantity = 1) {
+      global $currency;
+
+      return ecx_round(ecx_add_tax($products_price, $products_tax), $this->currencies[$currency]['decimal_places']) * $quantity;
+    }
+
+    function is_set($code) {
+      if (isset($this->currencies[$code]) && ecx_not_null($this->currencies[$code])) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+
+    function get_value($code) {
+      return $this->currencies[$code]['value'];
+    }
+
+    function get_decimal_places($code) {
+      return $this->currencies[$code]['decimal_places'];
+    }
+
+    function display_price($products_price, $products_tax, $quantity = 1) {
+      return $this->format($this->calculate_price($products_price, $products_tax, $quantity));
+    }
+  }
+  /** used to extend curriencies class */
+  do_action('extend_currencies');
+?>
