@@ -1,16 +1,22 @@
 <?php
-/*
-  $Id$
+/** 
+* @(#) $Id: osc_template.class.php $
+* 
+* 
+* @package template 
+*
+* @copyright (ported version)2013 ecomextra 
+* @copyright (Most) Portions Copyright 2010 osCommerce
+* @license   Released under the GNU General Public License
 
-  osCommerce, Open Source E-Commerce Solutions
-  http://www.oscommerce.com
 
-  Copyright (c) 2010 osCommerce
-
-  Released under the GNU General Public License
 */
+if(!defined('IN_ECX')){
+die ("Illegal access attempt");
+}
 
-  class oscTemplate {
+
+  class oscTemplate extends FastTemplate{
     var $_title;
     var $_blocks = array();
     var $_grid_container_width = 24;
