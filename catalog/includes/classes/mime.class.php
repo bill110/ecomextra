@@ -10,7 +10,6 @@
 * @copyright (Most) Portions Copyright 2003 osCommerce
 * @license   Released under the GNU General Public License
 
-  mime.php - a class to assist in building mime-HTML eMails
 
   The original class was made by Richard Heyes <richard@phpguru.org>
   and can be found here: http://www.phpguru.org
@@ -96,8 +95,7 @@ die ("Illegal access attempt");
 
 // Assign stuff to member variables
       $this->_encoded = array();
-/* HPDL PHP3 */
-//      $this->_headers  =& $headers;
+
       $this->_headers = $headers;
       $this->_body = $body;
     }
@@ -115,8 +113,7 @@ die ("Illegal access attempt");
  */
 
     function encode() {
-/* HPDL PHP3 */
-//      $encoded =& $this->_encoded;
+
       $encoded = $this->_encoded;
 
       if (ecx_not_null($this->_subparts)) {
@@ -126,8 +123,7 @@ die ("Illegal access attempt");
 // Add body parts to $subparts
         for ($i=0; $i<count($this->_subparts); $i++) {
           $headers = array();
-/* HPDL PHP3 */
-//          $tmp = $this->_subparts[$i]->encode();
+
           $_subparts = $this->_subparts[$i];
           $tmp = $_subparts->encode();
 
@@ -145,8 +141,7 @@ die ("Illegal access attempt");
       }
 
 // Add headers to $encoded
-/* HPDL PHP3 */
-//      $encoded['headers'] =& $this->_headers;
+
       $encoded['headers'] = $this->_headers;
 
       return $encoded;
@@ -168,8 +163,7 @@ die ("Illegal access attempt");
  * @access public
  */
 
-/* HPDL PHP3 */
-//    function &addSubPart($body, $params) {
+
     function addSubPart($body, $params) {
       $this->_subparts[] = new mime($body, $params);
 
